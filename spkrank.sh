@@ -65,7 +65,7 @@ awk ' \
       MN_QUEUE_IN_SELECTION=$(( $MN_QUEUE_POSITION <= $(( $MN_QUEUE_LENGTH / 10 )) ))
     fi
   fi
-  echo $MN_QUEUE_POSITION/$MN_QUEUE_LENGTH
+  echo $MN_QUEUE_POSITION/$MN_QUEUE_LENGTH"-"$MASTERNODE_BIND_IP
 }
 
 if [ -z "$1" ]; then
@@ -82,10 +82,13 @@ fi
 
 for m in $nodes
 do
-  mnaddr=$(cat ~/.sparkscore/masternode.conf |grep -e "^$m "|awk '{print $2}')
+  mnaddr=$(cat ~/.sparkscore/masternode.conf |grep -e "^$m "|awk '{print $2} ')
   if [ -z "$mnaddr" ];then
     mnaddr=$m
   fi
-  rank=$(getrank $mnaddr)
-  echo $m $rank $((100*${rank#* }))\%
+  info=$(getrank $mnaddr)
+  rank=$(echo $info | cut -d "-" -f 1)
+  text=$(echo $info | cut -d "-" -f 2)
+  
+  echo -e $m ' \t' $rank  $((100*${rank#* }))\% '\t' $text
 done|sort -nk3
