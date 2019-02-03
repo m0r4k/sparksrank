@@ -3,6 +3,12 @@
 #shows ranks of your masternodes defined in ~/.dashcore/masternodes.conf
 #or shows ranks of masternodes specified as arguments. 
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+printf "I ${RED}love${NC} Stack Overflow\n"
+
 function cache_output(){
   # cached output
   FILE=$1
@@ -52,6 +58,7 @@ awk ' \
     }
 }' |  sort -k10 -n)
   MN_STATUS=$(   echo "$SORTED_MN_LIST" | grep -m1 $MASTERNODE_BIND_IP | awk '{print $2}')
+  MN_PROTO=$(   echo "$SORTED_MN_LIST" | grep -m1 $MASTERNODE_BIND_IP | awk '{print $3}')
   MN_VISIBLE=$(  echo "$MN_STATUS" | wc -l)
   MN_ENABLED=$(  echo "$SORTED_MN_LIST" | grep -c ENABLED)
   MN_UNHEALTHY=$(echo "$SORTED_MN_LIST" | grep -c EXPIRED)
@@ -65,7 +72,7 @@ awk ' \
       MN_QUEUE_IN_SELECTION=$(( $MN_QUEUE_POSITION <= $(( $MN_QUEUE_LENGTH / 10 )) ))
     fi
   fi
-  echo $MN_QUEUE_POSITION/$MN_QUEUE_LENGTH"-"$MASTERNODE_BIND_IP
+  echo $MN_QUEUE_POSITION/$MN_QUEUE_LENGTH"-"$MASTERNODE_BIND_IP"-"$MN_PROTO
 }
 
 if [ -z "$1" ]; then
@@ -89,6 +96,16 @@ do
   info=$(getrank $mnaddr)
   rank=$(echo $info | cut -d "-" -f 1)
   text=$(echo $info | cut -d "-" -f 2)
-  
-  echo -e $m ' \t' $rank  $((100*${rank#* }))\% '\t' $text
+  proto=$(echo $info | cut -d "-" -f 3)
+
+  color=$GREEN
+
+  if [[ $proto == *"208"* ]]
+  then
+    echo "if done"
+    color=$RED
+  fi
+
+
+  echo -e $m ' \t' $rank  $((100*${rank#* }))\% '\t' $text '\t' ${color} $proto ${NC}
 done|sort -nk3
