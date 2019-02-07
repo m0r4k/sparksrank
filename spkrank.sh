@@ -7,8 +7,6 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-printf "I ${RED}love${NC} Stack Overflow\n"
-
 function cache_output(){
   # cached output
   FILE=$1
@@ -102,7 +100,6 @@ do
 
   if [[ $proto == *"208"* ]]
   then
-    echo "if done"
     color=$RED
   fi
 
