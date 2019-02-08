@@ -102,7 +102,6 @@ do
 
   if [[ $proto == *"208"* ]]
   then
-    echo "if done"
     color=$RED
   fi
 
