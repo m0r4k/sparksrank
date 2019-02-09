@@ -14,7 +14,7 @@ Single Masternode
 ***
 Multiple masternodes use the masternode.conf file
 ***
-* copy hot wallet masternode.conf to linux .sparkscore folfer
+* copy hot wallet masternode.conf to linux .sparkscore folder
 * run script with .spkrank.sh or bash spkrank.sh
 
 ***
