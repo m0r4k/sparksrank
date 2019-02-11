@@ -90,9 +90,6 @@ def writeMnOutput(conf_dic, rank_dic, filename=False):
 
 
 def printOutput(output):
-
-    print(json.dumps(output))
-
     #BEGIN
     print('{:=<115}'.format(bcolors.HEADER + '' + bcolors.ENDC))
 
@@ -134,20 +131,30 @@ def printOutput(output):
         print('{:<30s}'.format(stcol + str(output[line]['status']) + bcolors.ENDC), end=' \n')
 
 
+def mainControl():
+    #### Write the FILES ####
+    writeCache(cliCmd('masternode list', False), './mn_list.json')
+    writeCache(cliCmd('masternode list rank', False), './mn_rank.json')
+    writeMnCache(cliCmd('masternode list-conf', False), "./mn_conf.json")
 
-#### Write the FILES ####
-writeCache(cliCmd('masternode list', False), './mn_list.json')
-writeCache(cliCmd('masternode list rank', False), './mn_rank.json')
-writeMnCache(cliCmd('masternode list-conf', False), "./mn_conf.json")
+    #### Open the FILES ####
+    list_file = open('mn_list.json', 'r')
+    list_dic = json.load(list_file)
+    list_file.close()
+    rank_file = open('mn_rank.json', 'r')
+    rank_dic = json.load(rank_file)
+    rank_file.close()
+    conf_file = open('mn_conf.json', 'r')
+    conf_dic = json.load(conf_file)
+    rank_file.close()
 
-#### Open the FILES ####
-list_dic = json.loads(open('mn_list.json', 'r').read())
-rank_dic = json.loads(open('mn_rank.json', 'r').read())
-conf_dic = json.loads(open('mn_conf.json', 'r').read())
 
-#### Write output FILES ####
-writeMnOutput(conf_dic, rank_dic, 'mn_output.json')
-output_dic = json.loads(open('mn_output.json','r').read())
+    #### Write output FILES ####
+    writeMnOutput(conf_dic, rank_dic, 'mn_output.json')
+    output_dic = json.load(open('mn_output.json', 'r'))
 
-### Print the OutputFile ####
-printOutput(output_dic)
+    ### Print the OutputFile ####
+    printOutput(output_dic)
+
+
+mainControl()
