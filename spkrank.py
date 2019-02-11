@@ -105,6 +105,8 @@ def printOutput(output):
     print('{:>1s}'.format('|'), end=' ')
     print('{:<18s}'.format(bcolors.OKGREEN + 'sentinel' + bcolors.ENDC), end=' ')
     print('{:1s}'.format('|'), end=' ')
+    print('{:<18s}'.format(bcolors.OKGREEN + 'daemon' + bcolors.ENDC), end=' ')
+    print('{:1s}'.format('|'), end=' ')
     print('{:<30s}'.format(bcolors.OKBLUE + 'status' + bcolors.ENDC), end=' \n')
 
     # END
@@ -131,7 +133,14 @@ def printOutput(output):
         print('{:>1s}'.format('|'), end=' ')
         print('{:<18s}'.format(scol + str(output[line]['sentinelversion']) + bcolors.ENDC), end=' ')
         print('{:1s}'.format('|'), end=' ')
+        print('{:<18s}'.format(scol + str(output[line]['daemonversion']) + bcolors.ENDC), end=' ')
+        print('{:1s}'.format('|'), end=' ')
         print('{:<30s}'.format(stcol + str(output[line]['status']) + bcolors.ENDC), end=' \n')
+
+    print('{:=<115}'.format(bcolors.HEADER + ''),end=bcolors.ENDC+'\n')
+    print('amountof listed MASTERNODES ['+str(len(output))+']')
+
+    print(output)
 
 
 def mainControl():
