@@ -84,7 +84,7 @@ def writeMnOutput(conf_dic, list_dic, filename=False):
             for i in conf_dic:
                 col_txid = conf_dic[i]['txHash'] + '-' + conf_dic[i]['outputIndex']
                 #tmp_dic = cliCmd('masternode list json ')
-                if list_dic != {}:
+                if list_dic != {} and col_txid in list_dic:
                     output_dic[index[col_txid]] = list_dic[col_txid]
                     output_dic[index[col_txid]]['rank'] = index[col_txid]
                     output_dic[index[col_txid]]['max_rank'] = enabled_mn
