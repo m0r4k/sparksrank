@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import time
 import os
+import operator
 
 coin_cli = 'sparks-cli'
 cache_time_min = 0.1
@@ -69,7 +70,7 @@ def writeMnCache(text, filename, output=False):
 
 
 def writeMnOutput(conf_dic, rank_dic, filename=False):
-    output_dic = {}
+    output_dic = dict()
     max_rank = len(rank_dic)
 
     if filename:
@@ -89,10 +90,10 @@ def writeMnOutput(conf_dic, rank_dic, filename=False):
 
 
 def printOutput(output):
-    #BEGIN
+    # BEGIN
     print('{:=<115}'.format(bcolors.HEADER + '' + bcolors.ENDC))
 
-    #HEADER
+    # HEADER
     print('{:<25}'.format(bcolors.BOLD + bcolors.HEADER + 'Masternode' + bcolors.ENDC), end=' ')
     print('{:<25}'.format(bcolors.BOLD + 'IP-Address' + bcolors.ENDC), end=' ')
     print('{:4s}'.format('MAX'), end=' ')
@@ -108,6 +109,9 @@ def printOutput(output):
 
     # END
     print('{:=<115}'.format(bcolors.HEADER + '' + bcolors.ENDC))
+
+    # change dict key str->int
+    output = {int(k): dict(v) for k, v in output.items()}
 
     for line in sorted(output):
         position = output[line]['rank'] / output[line]['max_rank'] * 100
@@ -147,14 +151,11 @@ def mainControl():
     conf_dic = json.load(conf_file)
     rank_file.close()
 
-
     #### Write output FILES ####
     writeMnOutput(conf_dic, rank_dic, './mn_output.json')
     output_file = open('./mn_output.json', 'r')
     output_dic = json.load(output_file)
     output_file.close()
-
-    print(output_dic)
 
     ### Print the OutputFile ####
     printOutput(output_dic)
