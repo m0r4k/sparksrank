@@ -5,9 +5,11 @@ import json
 from pathlib import Path
 import time
 import os
+import datetime
+
 
 coin_cli = 'sparks-cli'
-cache_time_min = 0.1
+cache_time_min = 0.01
 
 
 class bcolors:
@@ -22,7 +24,10 @@ class bcolors:
 
 
 def cliCmd(cmd, jsonify=True):
-    cli_output = subprocess.check_output(coin_cli + ' ' + cmd, shell=True).decode("utf-8")
+    try:
+        cli_output = subprocess.check_output(coin_cli + ' ' + cmd, shell=True).decode("utf-8")
+    except subprocess.CalledProcessError:
+        quit()
 
     if jsonify:
         cli_output = json.loads(cli_output)
@@ -98,7 +103,7 @@ def checkMnSync():
 
 def printOutput(output):
     # BEGIN
-    print('{:=<115}'.format(bcolors.HEADER + '' + bcolors.ENDC))
+    print('{:=<145}'.format(bcolors.HEADER + '' + bcolors.ENDC))
 
     # HEADER
     print('{:<25}'.format(bcolors.BOLD + bcolors.HEADER + 'Masternode' + bcolors.ENDC), end=' ')
@@ -108,16 +113,18 @@ def printOutput(output):
     print('{:>4s}'.format('POS'), end=' ')
     print('{:>6s}'.format('PERC'), end=' ')
     print('{:1s}'.format('%'), end=' ')
-    print('{:>20s}'.format(bcolors.OKGREEN + 'Proto' + bcolors.ENDC), end=' ')
+    print('{:>15s}'.format(bcolors.OKGREEN + 'Proto' + bcolors.ENDC), end=' ')
     print('{:>1s}'.format('|'), end=' ')
     print('{:<18s}'.format(bcolors.OKGREEN + 'sentinel' + bcolors.ENDC), end=' ')
     print('{:1s}'.format('|'), end=' ')
     print('{:<18s}'.format(bcolors.OKGREEN + 'daemon' + bcolors.ENDC), end=' ')
     print('{:1s}'.format('|'), end=' ')
+    print('{:<25s}'.format(bcolors.OKBLUE + 'lastpaidtime' + bcolors.ENDC), end=' ')
+    print('{:1s}'.format('|'), end=' ')
     print('{:<30s}'.format(bcolors.OKBLUE + 'status' + bcolors.ENDC), end=' \n')
 
     # END
-    print('{:=<115}'.format(bcolors.HEADER + '' + bcolors.ENDC))
+    print('{:=<145}'.format(bcolors.HEADER + '' + bcolors.ENDC))
 
     # change dict key str->int
     output = {int(k): dict(v) for k, v in output.items()}
@@ -129,6 +136,9 @@ def printOutput(output):
         scol = output[line]['sentinelversion'] == '1.2.0' and bcolors.OKGREEN or bcolors.FAIL
         stcol = output[line]['status'] == 'ENABLED' and bcolors.OKGREEN or bcolors.FAIL
         dcol = output[line]['daemonversion'] == '0.12.3.4' and bcolors.OKGREEN or bcolors.FAIL
+        paycol = bcolors.OKBLUE
+
+        last_paid_time=datetime.datetime.utcfromtimestamp(output[line]['lastpaidtime']).strftime('%Y-%m-%d %H:%M')
 
         print('{:<25}'.format(bcolors.BOLD + bcolors.OKBLUE + output[line]['alias'] + bcolors.ENDC), end=' ')
         print('{:<25}'.format(bcolors.BOLD + output[line]['address'].split(':')[0] + bcolors.ENDC), end=' ')
@@ -137,15 +147,17 @@ def printOutput(output):
         print('{:>4d}'.format(output[line]['rank']), end=' ')
         print('{:>6d}'.format(round(position)), end=' ')
         print('{:1s}'.format('%'), end=' ')
-        print('{:>20s}'.format(pcol + str(output[line]['protocol']) + bcolors.ENDC), end=' ')
+        print('{:>15s}'.format(pcol + str(output[line]['protocol']) + bcolors.ENDC), end=' ')
         print('{:>1s}'.format('|'), end=' ')
         print('{:<18s}'.format(scol + str(output[line]['sentinelversion']) + bcolors.ENDC), end=' ')
         print('{:1s}'.format('|'), end=' ')
         print('{:<18s}'.format(dcol + str(output[line]['daemonversion']) + bcolors.ENDC), end=' ')
         print('{:1s}'.format('|'), end=' ')
+        print('{:<25s}'.format(paycol + last_paid_time + bcolors.ENDC), end=' ')
+        print('{:1s}'.format('|'), end=' ')
         print('{:<30s}'.format(stcol + str(output[line]['status']) + bcolors.ENDC), end=' \n')
 
-    print('{:=<115}'.format(bcolors.HEADER + ''),end=bcolors.ENDC+'\n')
+    print('{:=<145}'.format(bcolors.HEADER + ''),end=bcolors.ENDC+'\n')
     print('amountof listed MASTERNODES ['+str(len(output))+']')
 
 
