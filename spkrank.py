@@ -79,11 +79,11 @@ def writeMnOutput(conf_dic, rank_dic, filename=False):
             for i in conf_dic:
                 col_txid = conf_dic[i]['txHash'] + '-' + conf_dic[i]['outputIndex']
                 tmp_dic = cliCmd('masternode list json ' + col_txid)
-
-                output_dic[rank_dic[col_txid]] = tmp_dic[col_txid]
-                output_dic[rank_dic[col_txid]]['rank'] = rank_dic[col_txid]
-                output_dic[rank_dic[col_txid]]['max_rank'] = max_rank
-                output_dic[rank_dic[col_txid]]['alias'] = conf_dic[i]['alias']
+                if tmp_dic != {}:
+                    output_dic[rank_dic[col_txid]] = tmp_dic[col_txid]
+                    output_dic[rank_dic[col_txid]]['rank'] = rank_dic[col_txid]
+                    output_dic[rank_dic[col_txid]]['max_rank'] = max_rank
+                    output_dic[rank_dic[col_txid]]['alias'] = conf_dic[i]['alias']
 
             Path(filename).write_text(json.dumps(output_dic, sort_keys=True, indent=4))
 
