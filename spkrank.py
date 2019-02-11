@@ -7,9 +7,9 @@ import time
 import os
 import datetime
 
-
 coin_cli = 'sparks-cli'
 cache_time_min = 0.01
+enabled_mn = 0
 
 
 class bcolors:
@@ -26,13 +26,13 @@ class bcolors:
 def cliCmd(cmd, jsonify=True):
     try:
         cli_output = subprocess.check_output(coin_cli + ' ' + cmd, shell=True).decode("utf-8")
+
+        if jsonify:
+            cli_output = json.loads(cli_output)
+
+        return cli_output
     except subprocess.CalledProcessError:
         quit()
-
-    if jsonify:
-        cli_output = json.loads(cli_output)
-
-    return cli_output
 
 
 def fileAge(filename):
@@ -73,9 +73,9 @@ def writeMnCache(text, filename, output=False):
             return json.loads(output)
 
 
-def writeMnOutput(conf_dic, rank_dic, filename=False):
+def writeMnOutput(conf_dic, list_dic, filename=False):
     output_dic = dict()
-    max_rank = len(rank_dic)
+    index = {k: i for i, k in enumerate(list_dic.keys())}
 
     if filename:
         file_age = fileAge(filename)
@@ -83,12 +83,12 @@ def writeMnOutput(conf_dic, rank_dic, filename=False):
         if file_age > cache_time_min or file_age == 0:
             for i in conf_dic:
                 col_txid = conf_dic[i]['txHash'] + '-' + conf_dic[i]['outputIndex']
-                tmp_dic = cliCmd('masternode list json ' + col_txid)
-                if tmp_dic != {}:
-                    output_dic[rank_dic[col_txid]] = tmp_dic[col_txid]
-                    output_dic[rank_dic[col_txid]]['rank'] = rank_dic[col_txid]
-                    output_dic[rank_dic[col_txid]]['max_rank'] = max_rank
-                    output_dic[rank_dic[col_txid]]['alias'] = conf_dic[i]['alias']
+                #tmp_dic = cliCmd('masternode list json ')
+                if list_dic != {}:
+                    output_dic[index[col_txid]] = list_dic[col_txid]
+                    output_dic[index[col_txid]]['rank'] = index[col_txid]
+                    output_dic[index[col_txid]]['max_rank'] = enabled_mn
+                    output_dic[index[col_txid]]['alias'] = conf_dic[i]['alias']
 
             Path(filename).write_text(json.dumps(output_dic, sort_keys=True, indent=4))
 
@@ -99,6 +99,17 @@ def checkMnSync():
     if not check['IsSynced']:
         print('you need to wait till mn is synced')
         quit()
+
+
+def readEnabled(mn_list):
+    export_list = {}
+
+    for i in mn_list.copy():
+        status = mn_list[i]['status']
+        if status == 'ENABLED' or status == 'SENTINEL_PING_EXPIRED':
+            export_list[i] = mn_list[i]
+
+    return len(export_list)
 
 
 def printOutput(output):
@@ -131,14 +142,13 @@ def printOutput(output):
 
     for line in sorted(output):
         position = output[line]['rank'] / output[line]['max_rank'] * 100
-        scol = stcol = bcolors.FAIL
         pcol = output[line]['protocol'] > 20208 and bcolors.OKGREEN or bcolors.FAIL
         scol = output[line]['sentinelversion'] == '1.2.0' and bcolors.OKGREEN or bcolors.FAIL
         stcol = output[line]['status'] == 'ENABLED' and bcolors.OKGREEN or bcolors.FAIL
         dcol = output[line]['daemonversion'] == '0.12.3.4' and bcolors.OKGREEN or bcolors.FAIL
         paycol = bcolors.OKBLUE
 
-        last_paid_time=datetime.datetime.utcfromtimestamp(output[line]['lastpaidtime']).strftime('%Y-%m-%d %H:%M')
+        last_paid_time = datetime.datetime.utcfromtimestamp(output[line]['lastpaidtime']).strftime('%Y-%m-%d %H:%M')
 
         print('{:<25}'.format(bcolors.BOLD + bcolors.OKBLUE + output[line]['alias'] + bcolors.ENDC), end=' ')
         print('{:<25}'.format(bcolors.BOLD + output[line]['address'].split(':')[0] + bcolors.ENDC), end=' ')
@@ -157,12 +167,11 @@ def printOutput(output):
         print('{:1s}'.format('|'), end=' ')
         print('{:<30s}'.format(stcol + str(output[line]['status']) + bcolors.ENDC), end=' \n')
 
-    print('{:=<145}'.format(bcolors.HEADER + ''),end=bcolors.ENDC+'\n')
-    print('amountof listed MASTERNODES ['+str(len(output))+']')
+    print('{:=<145}'.format(bcolors.HEADER + ''), end=bcolors.ENDC + '\n')
+    print('amountof listed MASTERNODES [' + str(len(output)) + ']')
 
 
 def mainControl():
-
     checkMnSync()
 
     #### Write the FILES ####
@@ -181,8 +190,14 @@ def mainControl():
     conf_dic = json.load(conf_file)
     rank_file.close()
 
+    ### Fill global VARS ###
+
+    global enabled_mn
+    enabled_mn = readEnabled(list_dic)
+
+
     #### Write output FILES ####
-    writeMnOutput(conf_dic, rank_dic, './mn_output.json')
+    writeMnOutput(conf_dic, list_dic, './mn_output.json')
     output_file = open('./mn_output.json', 'r')
     output_dic = json.load(output_file)
     output_file.close()
