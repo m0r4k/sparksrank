@@ -6,6 +6,7 @@ from pathlib import Path
 import time
 import os
 import datetime
+from collections import OrderedDict
 
 coin_cli = 'sparks-cli'
 cache_time_min = 0.01
@@ -28,7 +29,7 @@ def cliCmd(cmd, jsonify=True):
         cli_output = subprocess.check_output(coin_cli + ' ' + cmd, shell=True).decode("utf-8")
 
         if jsonify:
-            cli_output = json.loads(cli_output)
+            cli_output = json.loads(cli_output, object_pairs_hook=OrderedDict)
 
         return cli_output
     except subprocess.CalledProcessError:
@@ -70,12 +71,28 @@ def writeMnCache(text, filename, output=False):
 
         Path(filename).write_text(output)
         if output:
-            return json.loads(output)
+            return json.loads(output, object_pairs_hook=OrderedDict)
 
 
 def writeMnOutput(conf_dic, list_dic, filename=False):
     output_dic = dict()
-    index = {k: i for i, k in enumerate(list_dic.keys())}
+    index = {}
+    n = 1
+    ip_list = {}
+
+    for i in conf_dic:
+        txid = conf_dic[i]['txHash']+'-'+conf_dic[i]['outputIndex']
+        ip_list[txid] = conf_dic[i]['address']
+
+    for i in list_dic:
+        status = list_dic[i]['status']
+        if status == "ENABLED" or status == "SETINEL_PING_EXPIRED":
+            index[i] = n
+            n = n+1
+        if i in ip_list:
+            index[i] = n
+            n = n+1
+
 
     if filename:
         file_age = fileAge(filename)
@@ -104,7 +121,7 @@ def checkMnSync():
 def readEnabled(mn_list):
     export_list = {}
 
-    for i in mn_list.copy():
+    for i in mn_list:
         status = mn_list[i]['status']
         if status == 'ENABLED' or status == 'SENTINEL_PING_EXPIRED':
             export_list[i] = mn_list[i]
@@ -181,13 +198,13 @@ def mainControl():
 
     #### Open the FILES ####
     list_file = open('mn_list.json', 'r')
-    list_dic = json.load(list_file)
+    list_dic = json.load(list_file, object_pairs_hook=OrderedDict)
     list_file.close()
     rank_file = open('mn_rank.json', 'r')
-    rank_dic = json.load(rank_file)
+    rank_dic = json.load(rank_file, object_pairs_hook=OrderedDict)
     rank_file.close()
     conf_file = open('mn_conf.json', 'r')
-    conf_dic = json.load(conf_file)
+    conf_dic = json.load(conf_file, object_pairs_hook=OrderedDict)
     rank_file.close()
 
     ### Fill global VARS ###
@@ -199,7 +216,7 @@ def mainControl():
     #### Write output FILES ####
     writeMnOutput(conf_dic, list_dic, './mn_output.json')
     output_file = open('./mn_output.json', 'r')
-    output_dic = json.load(output_file)
+    output_dic = json.load(output_file, object_pairs_hook=OrderedDict)
     output_file.close()
 
     ### Print the OutputFile ####
