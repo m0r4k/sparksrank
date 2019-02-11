@@ -5,7 +5,6 @@ import json
 from pathlib import Path
 import time
 import os
-import copy
 
 coin_cli = 'sparks-cli'
 cache_time_min = 0.1
@@ -150,8 +149,12 @@ def mainControl():
 
 
     #### Write output FILES ####
-    writeMnOutput(conf_dic, rank_dic, 'mn_output.json')
-    output_dic = json.load(open('mn_output.json', 'r'))
+    writeMnOutput(conf_dic, rank_dic, './mn_output.json')
+    output_file = open('./mn_output.json', 'r')
+    output_dic = json.load(output_file)
+    output_file.close()
+
+    print(output_dic)
 
     ### Print the OutputFile ####
     printOutput(output_dic)
