@@ -140,8 +140,6 @@ def printOutput(output):
     print('{:=<115}'.format(bcolors.HEADER + ''),end=bcolors.ENDC+'\n')
     print('amountof listed MASTERNODES ['+str(len(output))+']')
 
-    print(output)
-
 
 def mainControl():
     #### Write the FILES ####
