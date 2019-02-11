@@ -131,7 +131,7 @@ def readEnabled(mn_list):
 
 def printOutput(output):
     # BEGIN
-    print('{:=<145}'.format(bcolors.HEADER + '' + bcolors.ENDC))
+    print('{:=<135}'.format(bcolors.HEADER + '' + bcolors.ENDC))
 
     # HEADER
     print('{:<25}'.format(bcolors.BOLD + bcolors.HEADER + 'Masternode' + bcolors.ENDC), end=' ')
@@ -152,7 +152,7 @@ def printOutput(output):
     print('{:<30s}'.format(bcolors.OKBLUE + 'status' + bcolors.ENDC), end=' \n')
 
     # END
-    print('{:=<145}'.format(bcolors.HEADER + '' + bcolors.ENDC))
+    print('{:=<135}'.format(bcolors.HEADER + '' + bcolors.ENDC))
 
     # change dict key str->int
     output = {int(k): dict(v) for k, v in output.items()}
@@ -184,7 +184,7 @@ def printOutput(output):
         print('{:1s}'.format('|'), end=' ')
         print('{:<30s}'.format(stcol + str(output[line]['status']) + bcolors.ENDC), end=' \n')
 
-    print('{:=<145}'.format(bcolors.HEADER + ''), end=bcolors.ENDC + '\n')
+    print('{:=<135}'.format(bcolors.HEADER + ''), end=bcolors.ENDC + '\n')
     print('amountof listed MASTERNODES [' + str(len(output)) + ']')
 
 
