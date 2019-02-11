@@ -7,7 +7,7 @@ import time
 import os
 import copy
 
-coin_cli: str = 'sparks-cli'
+coin_cli = 'sparks-cli'
 cache_time_min: float = 10
 
 
@@ -22,16 +22,16 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def cli_cmd(cmd: str, jsonify: bool = True) -> str:
-    cli_output: str = subprocess.check_output(coin_cli + ' ' + cmd, shell=True).decode("utf-8")
+def cli_cmd(cmd, jsonify=True):
+    cli_output = subprocess.check_output(coin_cli + ' ' + cmd, shell=True).decode("utf-8")
 
     if jsonify:
-        cli_output: str = json.loads(cli_output)
+        cli_output = json.loads(cli_output)
 
     return cli_output
 
 
-def calc_file_age(filename: str) -> int:
+def calc_file_age(filename):
     exists = Path(filename)
 
     if exists.is_file():
@@ -43,7 +43,7 @@ def calc_file_age(filename: str) -> int:
     return age / 60
 
 
-def write_cache(text: str, filename: str) -> bool:
+def write_cache(text, filename):
     file_age = calc_file_age(filename)
 
     if file_age > cache_time_min or file_age == 0:
@@ -52,7 +52,7 @@ def write_cache(text: str, filename: str) -> bool:
     return True
 
 
-def write_mn_cache(text: str, filename: str) -> bool:
+def write_mn_cache(text, filename):
     file_age = calc_file_age(filename)
 
     if file_age > cache_time_min or file_age == 0:
@@ -70,8 +70,8 @@ def write_mn_cache(text: str, filename: str) -> bool:
     return True
 
 
-def sortMnCache(file: dict, conf: dict) -> dict:
-    txid: dict = []
+def sortMnCache(file, conf):
+    txid = []
     for i in conf:
         txid.append(conf[i]['txHash'] + "-" + conf[i]['outputIndex'])
 
@@ -83,14 +83,14 @@ def sortMnCache(file: dict, conf: dict) -> dict:
     return output
 
 
-def sortEnabled(file: dict) -> int:
+def sortEnabled(file):
     for i in file.copy():
         if file[i]['status'] not in ["ENABLED", "SENTINEL_PING_EXPIRED"]:
             file.pop(i)
     return len(file)
 
 
-def buildOutput() -> dict:
+def buildOutput():
     output_obj = copy.deepcopy(conf_obj)
     sort_obj = {}
     for i in output_obj:
@@ -111,7 +111,7 @@ def buildOutput() -> dict:
     return output_obj
 
 
-def printOutput(list: dict = {}):
+def printOutput():
     print('{:<25s} {:<25s} {:4s} {:1s} {:>4s} {:>6s} {:1s} {:>20s} {:>1s} {:<18s} {:1s} {:<30s}'.format(
         bcolors.BOLD + bcolors.HEADER +
         'Masternode' + bcolors.ENDC,
@@ -167,8 +167,8 @@ write_cache(cli_cmd('masternode list rank', False), './mn_rank.json')
 write_mn_cache(cli_cmd('masternode list-conf', False), "./mn_conf.json")
 
 #### Open the FILES ####
-list_obj: dict = json.loads(open('mn_list.json', 'r').read())
-rank_obj: dict = json.loads(open('mn_rank.json', 'r').read())
-conf_obj: dict = json.loads(open('mn_conf.json', 'r').read())
+list_obj = json.loads(open('mn_list.json', 'r').read())
+rank_obj = json.loads(open('mn_rank.json', 'r').read())
+conf_obj = json.loads(open('mn_conf.json', 'r').read())
 
 printOutput()
