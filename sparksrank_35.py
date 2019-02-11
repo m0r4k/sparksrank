@@ -8,7 +8,7 @@ import os
 import copy
 
 coin_cli = 'sparks-cli'
-cache_time_min: float = 10
+cache_time_min = 0.1
 
 
 class bcolors:
@@ -56,7 +56,7 @@ def write_mn_cache(text, filename):
     file_age = calc_file_age(filename)
 
     if file_age > cache_time_min or file_age == 0:
-        iter_num: int = 0
+        iter_num = 0
         output = ""
         iter_string = ""
         for i in text.split('\"masternode\"'):
@@ -108,6 +108,7 @@ def buildOutput():
     for i in sorted(sort_obj):
         output_obj[i] = sort_obj[i]
 
+    print(output_obj)
     return output_obj
 
 
