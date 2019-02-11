@@ -5,7 +5,6 @@ import json
 from pathlib import Path
 import time
 import os
-import operator
 
 coin_cli = 'sparks-cli'
 cache_time_min = 0.1
@@ -89,6 +88,14 @@ def writeMnOutput(conf_dic, rank_dic, filename=False):
             Path(filename).write_text(json.dumps(output_dic, sort_keys=True, indent=4))
 
 
+def checkMnSync():
+    check = cliCmd('mnsync status')
+
+    if not check['IsSynced']:
+        print('you need to wait till mn is synced')
+        quit()
+
+
 def printOutput(output):
     # BEGIN
     print('{:=<115}'.format(bcolors.HEADER + '' + bcolors.ENDC))
@@ -121,6 +128,7 @@ def printOutput(output):
         pcol = output[line]['protocol'] > 20208 and bcolors.OKGREEN or bcolors.FAIL
         scol = output[line]['sentinelversion'] == '1.2.0' and bcolors.OKGREEN or bcolors.FAIL
         stcol = output[line]['status'] == 'ENABLED' and bcolors.OKGREEN or bcolors.FAIL
+        dcol = output[line]['daemonversion'] == '0.12.3.4' and bcolors.OKGREEN or bcolors.FAIL
 
         print('{:<25}'.format(bcolors.BOLD + bcolors.OKBLUE + output[line]['alias'] + bcolors.ENDC), end=' ')
         print('{:<25}'.format(bcolors.BOLD + output[line]['address'].split(':')[0] + bcolors.ENDC), end=' ')
@@ -133,7 +141,7 @@ def printOutput(output):
         print('{:>1s}'.format('|'), end=' ')
         print('{:<18s}'.format(scol + str(output[line]['sentinelversion']) + bcolors.ENDC), end=' ')
         print('{:1s}'.format('|'), end=' ')
-        print('{:<18s}'.format(scol + str(output[line]['daemonversion']) + bcolors.ENDC), end=' ')
+        print('{:<18s}'.format(dcol + str(output[line]['daemonversion']) + bcolors.ENDC), end=' ')
         print('{:1s}'.format('|'), end=' ')
         print('{:<30s}'.format(stcol + str(output[line]['status']) + bcolors.ENDC), end=' \n')
 
@@ -142,6 +150,9 @@ def printOutput(output):
 
 
 def mainControl():
+
+    checkMnSync()
+
     #### Write the FILES ####
     writeCache(cliCmd('masternode list', False), './mn_list.json')
     writeCache(cliCmd('masternode list rank', False), './mn_rank.json')
