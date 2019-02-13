@@ -143,7 +143,7 @@ def writeMnOutput(conf_dic, list_dic, rank_dic, filename=False):
                 new_id = output_dic[i]['rank_pos']
                 rank_output_dic[new_id] = output_dic[i]
 
-            Path(filename).write_text(json.dumps(rank_output_dic, sort_keys=True, indent=4, ensure_ascii=False))
+            Path(filename).write_text(json.dumps(rank_output_dic, sort_keys=True, indent=4, ensure_ascii=False, ))
 
 
 
