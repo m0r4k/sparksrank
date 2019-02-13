@@ -100,7 +100,6 @@ class Coin:
     def writefile(cls, filename, data, sort_keys=True, indent=4):
         file_age = cls.fileage(filename)
         if file_age > cls.cache_time_min or file_age == 0:
-            print('wrote_fioles')
             Path(filename).write_text(json.dumps(data, sort_keys=sort_keys, indent=indent))
 
     @classmethod
