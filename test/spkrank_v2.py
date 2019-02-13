@@ -116,7 +116,7 @@ def writeMnOutput(conf_dic, list_dic, rank_dic, filename=False):
                 col_txid = conf_dic[i]['txHash'] + '-' + conf_dic[i]['outputIndex']
 
                 ## fill rank with 0
-                if list_dic != {} and col_txid in list_dic:
+                if list_dic != {}:
                     output_dic[index[col_txid]] = list_dic[col_txid]
                     filler = output_dic[index[col_txid]]
                     lastpaidtime = list_dic[col_txid]['lastpaidtime']

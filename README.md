@@ -21,6 +21,27 @@ People who wanna use this for their own Coin -> just grab it but leave a link
 [ user@mypc:~$ ] python3 spkrank.py
 ```
 
+
+## FAQ
+- Why do I see only empty Line?
+  check your masternode.conf this is filled with the information of your masternode
+  so if you do 
+  
+```bash
+[ user@mypc:~$ ] sparks-cli masternode list-conf
+```
+   and the answer is
+   
+```bash
+{
+}
+```
+  you need to check
+
+```bash
+[ user@mypc:~$ ] cat ~/.sparkscore/masternode.conf
+```
+
 ### Donation
 If you want to donate -> you are welcome  
 sparks = GX6S6icvknCzXrjpCQdTKwzNuxBCCByVVV

@@ -47,17 +47,17 @@ for line in mns:
         mn_queue.append(mnstat)
 
 mn_queue = sorted(mn_queue, key=lambda x: x[8])
-ind = {k:i for i,k in enumerate(mn_queue.keys())}
 
-
-for i in ind:
-    print(i)
 
 n=1
 for line in mn_queue:
     line.append(n)
     line.append(len(mn_queue))
+    if line[7] == "80.211.45.37:8890":
+        print(line)
+
     n=n+1
+
 
 
 print(mn_queue)
