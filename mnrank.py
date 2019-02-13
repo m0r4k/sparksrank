@@ -210,7 +210,7 @@ class Coin:
         now = int(datetime.datetime.now().strftime("%s"))
 
         # BEGIN
-        print('{:-<153}'.format(bcolors.HEADER+bcolors.ENDC), end='\n')
+        print('{:-<139}'.format(bcolors.HEADER+bcolors.ENDC), end='\n')
 
         # HEADER
         print('{:<1s}'.format('|'), end=' ')
@@ -230,10 +230,10 @@ class Coin:
         print('{:1s}'.format('|'), end=' ')
         print('{:<25s}'.format(bcolors.OKBLUE + 'lastpaidtime' + bcolors.ENDC), end=' ')
         print('{:1s}'.format('|'), end=' ')
-        print('{:<29s}'.format(bcolors.OKBLUE + 'status' + bcolors.ENDC), end='| \n')
+        print('{:<31s}'.format(bcolors.OKBLUE + 'status' + bcolors.ENDC), end=' |\n')
 
         # END
-        print('{:-<153}'.format(bcolors.HEADER+bcolors.ENDC), end='\n')
+        print('{:-<139}'.format(bcolors.HEADER+bcolors.ENDC), end='\n')
 
         for line in sorted(_output, reverse=False):
             txid = _output[line][0]
@@ -266,9 +266,9 @@ class Coin:
             print('{:1s}'.format('|'), end=' ')
             print('{:<25s}'.format(paycol + last_paid_time_h + bcolors.ENDC), end=' ')
             print('{:1s}'.format('|'), end=' ')
-            print('{:<25s}'.format(stcol + str(_out['status'])), end=bcolors.ENDC + '| \n')
+            print('{:<28s}'.format(stcol + str(_out['status'])), end=bcolors.ENDC + '| \n')
 
-        print('{:-<153}'.format(bcolors.HEADER+bcolors.ENDC ), end='\n')
+        print('{:-<139}'.format(bcolors.HEADER+bcolors.ENDC ), end='\n')
         print('amountof listed MASTERNODES [' + str(len(conf_dict)) + ']')
 
 
