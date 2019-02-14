@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 
 import json
 import subprocess
@@ -39,7 +39,7 @@ class Coin:
     if len(sys.argv) > 1:
         conf_file = sys.argv[1]
     else:
-        conf_file = tdir+'/mn_conf.json'
+        conf_file = './mn_conf.json'
 
     @classmethod
     def checkmnsync(cls):
