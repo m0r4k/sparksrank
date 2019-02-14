@@ -7,6 +7,7 @@ from pathlib import Path
 import time
 import os
 import datetime
+import sys
 
 
 class bcolors:
@@ -26,10 +27,18 @@ class Coin:
     coin_cli = 'sparks-cli'
     Config_file = './mn.conf'
     list_file = './mn_list.json'
-    conf_file = './mn_conf.json'
+
+
     output_file = './mn_output.json'
-    rank_file = './mn_rank.json'
+    #rank_file = './mn_rank.json'
     _now_ = int(datetime.datetime.now().strftime("%s"))
+
+
+    if len(sys.argv) > 1:
+        conf_file = sys.argv[1]
+    else:
+        #list_file = './mn_list.json'
+        conf_file = './mn_conf.json'
 
     @classmethod
     def checkmnsync(cls):
@@ -46,14 +55,16 @@ class Coin:
 
         cls.checkmnsync()
 
-        if cls.fileage(cls.conf_file) == 0 or cls.fileage(cls.conf_file) >= cls.cache_time_min:
-            cls.writefile(cls.conf_file, Coin.clicmd('masternode list-conf', hook='conf-hook'))
+        if len(sys.argv) == 1:
+            if cls.fileage(cls.conf_file) == 0 or cls.fileage(cls.conf_file) >= cls.cache_time_min:
+                cls.writefile(cls.conf_file, Coin.clicmd('masternode list-conf', hook='conf-hook'))
+
 
         if cls.fileage(cls.list_file) == 0 or cls.fileage(cls.list_file) >= cls.cache_time_min:
             cls.writefile(cls.list_file, Coin.clicmd('masternode list'))
 
-        if cls.fileage(cls.rank_file) == 0 or cls.fileage(cls.rank_file) >= cls.cache_time_min:
-            cls.writefile(cls.rank_file, Coin.clicmd('masternode list rank'))
+        #if cls.fileage(cls.rank_file) == 0 or cls.fileage(cls.rank_file) >= cls.cache_time_min:
+        #    cls.writefile(cls.rank_file, Coin.clicmd('masternode list rank'))
 
 
 
@@ -101,6 +112,7 @@ class Coin:
         file_age = cls.fileage(filename)
         if file_age > cls.cache_time_min or file_age == 0:
             Path(filename).write_text(json.dumps(data, sort_keys=sort_keys, indent=indent))
+        return()
 
     @classmethod
     def rankcalc(cls, lastpaidtime, activeseconds):
@@ -274,7 +286,7 @@ class Coin:
 
 
 Coin.buildfiles()
-print(Coin.printoutput())
+Coin.printoutput()
 
 
 
