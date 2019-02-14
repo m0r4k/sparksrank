@@ -8,6 +8,8 @@ import time
 import os
 import datetime
 import sys
+import tempfile
+
 
 
 class bcolors:
@@ -25,16 +27,19 @@ class Coin:
     # PARAMETERS #
     cache_time_min = 3
     coin_cli = 'sparks-cli'
-    Config_file = './mn.conf'
-    list_file = './mn_list.json'
+    tdir = tempfile.gettempdir()
 
-    output_file = './mn_output.json'
+    Config_file = tdir+'/mn.conf'
+    list_file = tdir+'/mn_list.json'
+
+    output_file = tdir+'/mn_output.json'
     _now_ = int(datetime.datetime.now().strftime("%s"))
+
 
     if len(sys.argv) > 1:
         conf_file = sys.argv[1]
     else:
-        conf_file = './mn_conf.json'
+        conf_file = tdir+'/mn_conf.json'
 
     @classmethod
     def checkmnsync(cls):
@@ -123,6 +128,8 @@ class Coin:
 
     @classmethod
     def writefile(cls, filename, data, sort_keys=True, indent=4):
+
+
         file_age = cls.fileage(filename)
         if file_age > cls.cache_time_min or file_age == 0:
             Path(filename).write_text(json.dumps(
