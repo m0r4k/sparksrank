@@ -53,7 +53,8 @@ class Coin:
 
         if len(sys.argv) == 1:
             if cls.fileage(cls.conf_file) == 0:
-                cls.writefile(cls.conf_file, Coin.clicmd('masternode list-conf', hook='conf-hook'))
+                cls.writefile(cls.conf_file, Coin.clicmd(
+                    'masternode list-conf', hook='conf-hook'))
         else:
             if cls.fileage(sys.argv[1]) == 0:
                 print('config file not found please check')
@@ -67,7 +68,8 @@ class Coin:
     @classmethod
     def clicmd(cls, cmd, hook=''):
         try:
-            cli_output = subprocess.check_output(cls.coin_cli + ' ' + cmd, shell=True).decode("utf-8")
+            cli_output = subprocess.check_output(
+                cls.coin_cli + ' ' + cmd, shell=True).decode("utf-8")
 
             if hook == 'conf-hook':
                 iter_num = 0
@@ -85,7 +87,8 @@ class Coin:
                 output_json = json.loads(output, object_pairs_hook=OrderedDict)
 
                 for i in output_json:
-                    mnconf_json[output_json[i]['alias']] = output_json[i]['address'].split(':')[0]
+                    mnconf_json[output_json[i]['alias']] = output_json[i]['address'].split(':')[
+                        0]
                 return mnconf_json
 
             cli_output = json.loads(cli_output, object_pairs_hook=OrderedDict)
@@ -107,7 +110,8 @@ class Coin:
     def writefile(cls, filename, data, sort_keys=True, indent=4):
         file_age = cls.fileage(filename)
         if file_age > cls.cache_time_min or file_age == 0:
-            Path(filename).write_text(json.dumps(data, sort_keys=sort_keys, indent=indent))
+            Path(filename).write_text(json.dumps(
+                data, sort_keys=sort_keys, indent=indent))
         return ()
 
     @classmethod
@@ -136,13 +140,16 @@ class Coin:
 
             if ip in mn_conf_ips:
                 r_data[i] = dictdata[i]
-                pos_data[i] = cls.rankcalc(dictdata[i]['lastpaidtime'], dictdata[i]['activeseconds'])
+                pos_data[i] = cls.rankcalc(
+                    dictdata[i]['lastpaidtime'], dictdata[i]['activeseconds'])
             elif status == 'ENABLED' or status == 'SENTINEL_PING_EXPIRED':
                 r_data[i] = dictdata[i]
-                pos_data[i] = cls.rankcalc(dictdata[i]['lastpaidtime'], dictdata[i]['activeseconds'])
+                pos_data[i] = cls.rankcalc(
+                    dictdata[i]['lastpaidtime'], dictdata[i]['activeseconds'])
 
         # sort pos_data to get position
-        sorted_pos_data = sorted(pos_data.items(), key=lambda kv: kv[1], reverse=True)
+        sorted_pos_data = sorted(
+            pos_data.items(), key=lambda kv: kv[1], reverse=True)
 
         sorted_list = []
         for i in sorted_pos_data:
@@ -162,6 +169,7 @@ class Coin:
             _file_dic = json.load(_file, object_pairs_hook=OrderedDict)
             _file.close()
             return _file_dic
+
         return dict()
 
     @classmethod
@@ -203,9 +211,10 @@ class Coin:
         list_dict_filtered = cls.filteranks(list_dict, conf_dict)
 
         list_dict_txid = cls.ip2txid(list_dict_filtered, conf_dict)
-        list_dict_txid_reversed = OrderedDict(reversed(list(list_dict_txid.items())))
+        list_dict_txid_reversed = OrderedDict(
+            reversed(list(list_dict_txid.items())))
 
-        ## rename for easy lines
+        # rename for easy lines
         _output = list_dict_txid_reversed
         _list = list_dict_filtered
         _max_rank = len(_list)
