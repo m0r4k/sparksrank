@@ -22,22 +22,18 @@ class bcolors:
 
 
 class Coin:
-    ### PARAMETERS ###
+    # PARAMETERS #
     cache_time_min = 3
     coin_cli = 'sparks-cli'
     Config_file = './mn.conf'
     list_file = './mn_list.json'
 
-
     output_file = './mn_output.json'
-    #rank_file = './mn_rank.json'
     _now_ = int(datetime.datetime.now().strftime("%s"))
-
 
     if len(sys.argv) > 1:
         conf_file = sys.argv[1]
     else:
-        #list_file = './mn_list.json'
         conf_file = './mn_conf.json'
 
     @classmethod
@@ -56,17 +52,17 @@ class Coin:
         cls.checkmnsync()
 
         if len(sys.argv) == 1:
-            if cls.fileage(cls.conf_file) == 0 or cls.fileage(cls.conf_file) >= cls.cache_time_min:
+            if cls.fileage(cls.conf_file) == 0:
                 cls.writefile(cls.conf_file, Coin.clicmd('masternode list-conf', hook='conf-hook'))
-
+        else:
+            if cls.fileage(sys.argv[1]) == 0:
+                print('config file not found please check')
+                quit()
+            else:
+                print('file found ' + sys.argv[1])
 
         if cls.fileage(cls.list_file) == 0 or cls.fileage(cls.list_file) >= cls.cache_time_min:
             cls.writefile(cls.list_file, Coin.clicmd('masternode list'))
-
-        #if cls.fileage(cls.rank_file) == 0 or cls.fileage(cls.rank_file) >= cls.cache_time_min:
-        #    cls.writefile(cls.rank_file, Coin.clicmd('masternode list rank'))
-
-
 
     @classmethod
     def clicmd(cls, cmd, hook=''):
@@ -112,7 +108,7 @@ class Coin:
         file_age = cls.fileage(filename)
         if file_age > cls.cache_time_min or file_age == 0:
             Path(filename).write_text(json.dumps(data, sort_keys=sort_keys, indent=indent))
-        return()
+        return ()
 
     @classmethod
     def rankcalc(cls, lastpaidtime, activeseconds):
@@ -134,7 +130,6 @@ class Coin:
         for i in mndata:
             mn_conf_ips.append(mndata[i].split(':')[0])
 
-
         for i in dictdata:
             status = dictdata[i]['status']
             ip = dictdata[i]['address'].split(':')[0]
@@ -153,14 +148,11 @@ class Coin:
         for i in sorted_pos_data:
             sorted_list.append(i[0])
 
-
         for i in sorted_list:
             r_data[i] = dictdata[i]
             r_data[i]['pos'] = sorted_list.index(i)
 
-
         return r_data
-
 
     @staticmethod
     def openfile(filename):
@@ -187,7 +179,7 @@ class Coin:
             ip_pos[list_dict[i]['address'].split(':')[0]] = list_dict[i]['pos']
 
         for i in ip_name:
-            r_data[ip_pos[i]] = [ip_txid[i],ip_name[i]]
+            r_data[ip_pos[i]] = [ip_txid[i], ip_name[i]]
 
         return r_data
 
@@ -204,7 +196,6 @@ class Coin:
         else:
             return str('00d 00:00')
 
-
     @classmethod
     def printoutput(cls):
         list_dict = cls.openfile(cls.list_file)
@@ -214,7 +205,6 @@ class Coin:
         list_dict_txid = cls.ip2txid(list_dict_filtered, conf_dict)
         list_dict_txid_reversed = OrderedDict(reversed(list(list_dict_txid.items())))
 
-
         ## rename for easy lines
         _output = list_dict_txid_reversed
         _list = list_dict_filtered
@@ -222,10 +212,10 @@ class Coin:
         now = int(datetime.datetime.now().strftime("%s"))
 
         # BEGIN
-        print('{:-<139}'.format(bcolors.HEADER+bcolors.ENDC), end='\n')
+        print('{:-<132}'.format(bcolors.HEADER + '' + bcolors.ENDC), end=' \n')
 
         # HEADER
-        print('{:<1s}'.format('|'), end=' ')
+        print('{:<1s}'.format(bcolors.ENDC + '|'), end=' ')
         print('{:<25}'.format(bcolors.BOLD + bcolors.HEADER + 'Masternode' + bcolors.ENDC), end=' ')
         print('{:<25}'.format(bcolors.BOLD + 'IP-Address' + bcolors.ENDC), end=' ')
         print('{:>4s}'.format('MAX'), end=' ')
@@ -240,12 +230,12 @@ class Coin:
         print('{:1s}'.format('|'), end=' ')
         print('{:<18s}'.format(bcolors.OKGREEN + 'daemon' + bcolors.ENDC), end=' ')
         print('{:1s}'.format('|'), end=' ')
-        print('{:<25s}'.format(bcolors.OKBLUE + 'lastpaidtime' + bcolors.ENDC), end=' ')
+        print('{:<18s}'.format(bcolors.OKBLUE + 'lastpaid' + bcolors.ENDC), end=' ')
         print('{:1s}'.format('|'), end=' ')
         print('{:<31s}'.format(bcolors.OKBLUE + 'status' + bcolors.ENDC), end=' |\n')
 
         # END
-        print('{:-<139}'.format(bcolors.HEADER+bcolors.ENDC), end='\n')
+        print('{:-<132}'.format(bcolors.HEADER + bcolors.ENDC), end='\n')
 
         for line in sorted(_output, reverse=False):
             txid = _output[line][0]
@@ -261,7 +251,7 @@ class Coin:
 
             last_paid_time_h = cls.timeCalc(now - _out['lastpaidtime'])
 
-            print('{:<1s}'.format('|'), end=' ')
+            print('{:<1s}'.format(bcolors.ENDC + '|'), end=' ')
             print('{:<25}'.format(bcolors.BOLD + bcolors.OKBLUE + _name + bcolors.ENDC), end=' ')
             print('{:<25}'.format(bcolors.BOLD + _out['address'].split(':')[0] + bcolors.ENDC), end=' ')
             print('{:4d}'.format(_max_rank), end=' ')
@@ -276,19 +266,13 @@ class Coin:
             print('{:1s}'.format('|'), end=' ')
             print('{:<18s}'.format(dcol + str(_out['daemonversion']) + bcolors.ENDC), end=' ')
             print('{:1s}'.format('|'), end=' ')
-            print('{:<25s}'.format(paycol + last_paid_time_h + bcolors.ENDC), end=' ')
+            print('{:<18s}'.format(paycol + last_paid_time_h + bcolors.ENDC), end=' ')
             print('{:1s}'.format('|'), end=' ')
             print('{:<28s}'.format(stcol + str(_out['status'])), end=bcolors.ENDC + '| \n')
 
-        print('{:-<139}'.format(bcolors.HEADER+bcolors.ENDC ), end='\n')
+        print('{:-<132}'.format(bcolors.HEADER + bcolors.ENDC), end='\n')
         print('amountof listed MASTERNODES [' + str(len(conf_dict)) + ']')
-
 
 
 Coin.buildfiles()
 Coin.printoutput()
-
-
-
-
-
