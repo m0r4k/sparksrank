@@ -80,7 +80,7 @@ class Coin:
             'seed1_mn': '80.211.65.29',
             'seed2_mn': '80.211.57.4',
             'seed3_mn': '51.15.112.11',
-            'seed4_mn': '51.15.112.11',
+            'seed4_mn': '94.177.176.181',
         }
 
         cls.writefile(filename, _stdconf_dict)
