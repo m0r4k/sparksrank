@@ -58,12 +58,27 @@ class Coin:
         else:
             if cls.fileage(sys.argv[1]) == 0:
                 print('config file not found please check')
-                quit()
+                cls.stdconf(sys.argv[1])
             else:
                 print('file found ' + sys.argv[1])
 
         if cls.fileage(cls.list_file) == 0 or cls.fileage(cls.list_file) >= cls.cache_time_min:
             cls.writefile(cls.list_file, Coin.clicmd('masternode list'))
+
+    @classmethod
+    def stdconf(cls, filename=''):
+
+        if filename == '':
+            filename = cls.list_file
+
+        _stdconf_dict = {
+            'seed1_mn': '80.211.65.29',
+            'seed2_mn': '80.211.57.4',
+            'seed3_mn': '51.15.112.11',
+            'seed4_mn': '51.15.112.11',
+        }
+
+        cls.writefile(filename, _stdconf_dict)
 
     @classmethod
     def clicmd(cls, cmd, hook=''):
