@@ -1,15 +1,15 @@
 # sparksrank
 
 SparksRank supposes to show you where is your rank in masternode payout system.  
-Be shure this is just a position calculation.  
+Be aware this is just a position calculation.  
 
 People who wanna use this for their own Coin -> just grab it but leave a link
 
 ## grab and start
 - First of all you need a running cli-daemon 
-- if you don't have your sparks-cli in your $PATH environment [ change ] coin_cli
-- be shure your system is synced [ get ] sparks-cli mnsnyc status
-- python3 (3.5) is needed
+- If you don't have your sparks-cli in your $PATH environment [ change ] coin_cli in script
+- Be shure your system is synced [ get ] sparks-cli mnsnyc status
+- python3 (>3.5) is needed
 
 ## download
 ```bash
