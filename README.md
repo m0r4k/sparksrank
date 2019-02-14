@@ -18,15 +18,15 @@ People who wanna use this for their own Coin -> just grab it but leave a link
 ## start
 ```bash
 [ user@mypc:~$ ] cd sparksrank
-[ user@mypc:~$ ] python3 mnrank.py
+[ user@mypc:~/sparksrank$ ] python3 mnrank.py
 ```
 
 If you don't have a configure masternode.conf you can create your own mconf.json [name it as you like to] 
 ![Schema](doc/img/mn_generated_conf.png)  
 
 ```bash
-[ user@mypc:~$ ] python3 mnrank.py <name_of_file>
-[ user@mypc:~$ ] nano <name_of_file>
+[ user@mypc:~/sparksrank$ ] python3 mnrank.py <name_of_file>
+[ user@mypc:~/sparksrank$ ] nano <name_of_file>
 ```
 ![Schema](doc/img/mconf_nano.png)  
 
@@ -47,15 +47,22 @@ start the script again
   > ```bash
   > [ user@mypc:~$ ] sparks-cli masternode list-conf
   > ```
-
-  > and the answer is -> you need to check
+  > and the answer is
+   
+  > ```bash
+  > {
+  > }
+  > ```
+  > you need to check
 
   > ```bash
-  > [ user@mypc:~$ ] cat ~/.sparkscore/masternode.conf
+  > [ user@mypc:/sparksrank~$ ] cat ~/.sparkscore/masternode.conf
+  > or run the script with parameter of personal conf file
+  > [ user@mypc:~/sparksrank$ ] python3 mnrank.py <name_of_file> #ie. myconf.json
   > ```
 
 - Is there a MACPORT and/or Windows Version?
-  > YES and NO  it is python if you run >python3.5 on your machine you can ran the script.
+  > YES and NO  it is python if you run >python3.5 on your machine you can run the script.
   You have to mention that your cli (sparks-cli) is in the $PATH Environment of your OS.
   Give mee feedback in issues Section
 
