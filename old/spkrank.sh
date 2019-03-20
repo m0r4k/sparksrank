@@ -1,11 +1,13 @@
 #!/bin/bash
 
-#shows ranks of your masternodes defined in ~/.dashcore/masternodes.conf
+#shows ranks of your masternodes defined in ~/.sparkscore/masternodes.conf
 #or shows ranks of masternodes specified as arguments. 
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+NC=$(tput sgr0) # No Color
+
+printf "I ${RED}love${NC} Stack Overflow\n"
 
 function cache_output(){
   # cached output
@@ -103,6 +105,5 @@ do
     color=$RED
   fi
 
-
-  echo -e $m ' \t' $rank  $((100*${rank#* }))\% '\t' $text '\t' ${color} $proto ${NC}
+  printf "%-20s %10s %5s %22s %8s\n" $m $rank $((100*${rank#* }))\% $text "${color}$proto${NC}"
 done|sort -nk3
